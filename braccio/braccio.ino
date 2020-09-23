@@ -1,15 +1,3 @@
-
-/*
-  simpleMovements.ino
-
- This  sketch simpleMovements shows how they move each servo motor of Braccio
-
- Created on 18 Nov 2015
- by Andrea Martino
-
- This example is in the public domain.
- */
-
 #include <Braccio.h>
 #include <Servo.h>
 
@@ -23,34 +11,187 @@ Servo gripper;
 void setup() {
   //Initialization functions and set up the initial position for Braccio
   //All the servo motors will be positioned in the "safety" position:
-  //Base (M1):90 degrees
-  //Shoulder (M2): 45 degrees
-  //Elbow (M3): 180 degrees
-  //Wrist vertical (M4): 180 degrees
-  //Wrist rotation (M5): 90 degrees
-  //gripper (M6): 10 degrees
+  //Base            (M1): 0 degrees
+  //Shoulder        (M2): 40 degrees
+  //Elbow           (M3): 180 degrees
+  //Wrist vertical  (M4): 0 degrees
+  //Wrist rotation  (M5): 180 degrees
+  //gripper         (M6): 73 degrees
+  Serial.begin(9600);
   Braccio.begin();
+  moveStraight();
 }
 
+
 void loop() {
+  moveToPoint(10,0,10);
    /*
    Step Delay: a milliseconds delay between the movement of each servo.  Allowed values from 10 to 30 msec.
-   M1=base degrees. Allowed values from 0 to 180 degrees
-   M2=shoulder degrees. Allowed values from 15 to 165 degrees
-   M3=elbow degrees. Allowed values from 0 to 180 degrees
-   M4=wrist vertical degrees. Allowed values from 0 to 180 degrees
-   M5=wrist rotation degrees. Allowed values from 0 to 180 degrees
-   M6=gripper degrees. Allowed values from 10 to 73 degrees. 10: the toungue is open, 73: the gripper is closed.
+   M1=base degrees.               Allowed values from 0 to 180 degrees
+   M2=shoulder degrees.           Allowed values from 15 to 165 degrees
+   M3=elbow degrees.              Allowed values from 0 to 180 degrees
+   M4=wrist vertical degrees.     Allowed values from 0 to 180 degrees
+   M5=wrist rotation degrees.     Allowed values from 0 to 180 degrees
+   M6=gripper degrees.            Allowed values from 10 to 73 degrees. 10: the toungue is open, 73: the gripper is closed.
+  */
+  /*
+                       //(step delay, M1, M2, M3, M4, M5, M6);
+  Braccio.ServoMovement(20,           0,  40, 180, 0, 180,  73);
+
+  Braccio.ServoMovement(20,           0,  40, 180, 180, 180,  73);
   */
   
-                       //(step delay, M1, M2, M3, M4, M5, M6);
-  Braccio.ServoMovement(20,           0,  15, 180, 170, 0,  73);  
+   
+}
 
-  //Wait 1 second
-  delay(1000);
+void moveStraight(){
+  Braccio.ServoMovement(20,           0,  85, 90, 100, 180,  10); 
+}
 
-  Braccio.ServoMovement(20,           180,  165, 0, 0, 180,  10);  
+void moveTo(int a,int b,int c){
+  Braccio.ServoMovement(20,           0,  a, b, c, 180,  10); 
+}
 
-  //Wait 1 second
-  delay(1000);
+int moveToPoint(int x, int y, int z){
+  int a = 90;
+  int b = 90;
+  int c = 90;
+  int margin;
+  double _x = 0;
+  double _z = 0;
+  
+  while(true){
+    moveTo(a,b,c);
+    _x = getX(a,b,c);
+    _z = getZ(a,b,c);
+    
+    Serial.print(_x);
+    Serial.print(" ");
+    Serial.print(_z);
+    Serial.println();
+
+    if(_x > (x + margin)){
+      if(a >= 90){
+        a = a - 5;
+      }
+      if(a < 90){
+        a = a + 5;
+      }
+
+      if(b >= 90){
+        b = b - 5;
+      }
+      if(b < 90){
+        b = b + 5;
+      }
+
+      if(c >= 90){
+        c = c - 2;
+      }
+      if(c < 90){
+        c = c + 2;
+      }
+    }
+
+
+    if(_x < (x - margin)){
+      if(a >= 90){
+        a = a + 5;
+      }
+      if(a < 90){
+        a = a - 5;
+      }
+
+      if(b >= 90){
+        b = b + 5;
+      }
+      if(b < 90){
+        b = b - 5;
+      }
+
+      if(c >= 90){
+        c = c - 2;
+      }
+      if(c < 90){
+        c = c + 2;
+      }
+    }
+
+
+    if(_z > (z + margin)){
+      if(a >= 90){
+        a = a + 5;
+      }
+      if(a < 90){
+        a = a - 5;
+      }
+
+      if(b >= 90){
+        b = b + 5;
+      }
+      if(b < 90){
+        b = b - 5;
+      }
+
+      if(c >= 90){
+        c = c + 2;
+      }
+      if(c < 90){
+        c = c - 2;
+      }
+    }
+
+
+    if(_z < (z - margin)){
+      if(a >= 90){
+        a = a - 5;
+      }
+      if(a < 90){
+        a = a + 5;
+      }
+
+      if(b >= 90){
+        b = b - 5;
+      }
+      if(b < 90){
+        b = b + 5;
+      }
+
+      if(c >= 90){
+        c = c + 2;
+      }
+      if(c < 90){
+        c = c -2;
+      }
+    }
+
+    delay(3000);
+    
+  }
+}
+
+
+double getX(double a,double b,double c){
+  double W = 11.2;
+  double E = 12.2;
+  double S = 12.2;
+  
+  double r = ((2*PI)/360);
+  double A = a*r;
+  double B = b*r;
+  double C = c*r;
+  return (S*cos(A) + E*cos(B) + W*cos(C));
+}
+
+
+double getZ(double a,double b,double c){
+  double W = 11.2;
+  double E = 12.2;
+  double S = 12.2;
+  double Base = 7;
+  double r = ((2*PI)/360);
+  double A = a*r;
+  double B = b*r;
+  double C = c*r;
+  return (S*sin(A) + E*sin(B) + W*sin(C) + Base);
 }
