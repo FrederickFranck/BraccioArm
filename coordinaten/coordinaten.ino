@@ -197,7 +197,7 @@ void bruteforce(int x, int y, int z){
   }
 }
 
-
+//berekent X coordinaat met gegeven hoeken
 double getX(double a,double b,double c){
   double W = 11.2;
   double E = 12.2;
@@ -210,7 +210,7 @@ double getX(double a,double b,double c){
   return (S*cos(A) + E*cos(B) + W*cos(C));
 }
 
-
+berekent Z coordinaat met gegeven hoeken
 double getZ(double a,double b,double c){
   double W = 11.2;
   double E = 12.2;
