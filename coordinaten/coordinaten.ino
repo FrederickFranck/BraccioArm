@@ -43,15 +43,18 @@ void loop() {
   
    
 }
-
+//zet de arm rechtop
 void moveStraight(){
   Braccio.ServoMovement(20,           0,  85, 90, 100, 180,  10); 
 }
-
+//verplaats de arm met de gegeven hoeken
 void moveTo(int a,int b,int c){
   Braccio.ServoMovement(20,           0,  a, b, c, 180,  10); 
 }
 
+//beweeg naar een gevraagd punt (werkt niet)
+//gebruikt beginhoeken en past deze aan om zo dichter bij het gegeven punt te geraken 
+//maak de gegeven hoeken telkens kleiner/groter om zo in de buurt van het gegeven punt te bereiken
 int moveToPoint(int x, int y, int z){
   int a = 90;
   int b = 90;
