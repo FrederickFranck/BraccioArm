@@ -17,6 +17,7 @@ void setup() {
   //Wrist vertical  (M4): 0 degrees
   //Wrist rotation  (M5): 180 degrees
   //gripper         (M6): 73 degrees
+  //test
   Serial.begin(9600);
   Braccio.begin();
   moveStraight();
