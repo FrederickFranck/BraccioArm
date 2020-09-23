@@ -170,6 +170,30 @@ int moveToPoint(int x, int y, int z){
   }
 }
 
+void bruteforce(x, y, z){
+ double W = 11.2;
+  double E = 12.2;
+  double S = 12.2;
+  double Base = 7;
+  double r = ((2*PI)/360);
+
+  for(int a = 15; a <=165; a++){
+    for(int b = 0; b <= 180; b++){
+      for(int c = 0; c <= 180; c++){
+        double A = a*r;
+        double B = b*r;
+        double C = c*r;
+        if( (x == (S*cos(A) + E*cos(B) + W*cos(C))) && (z == (S*sin(A) + E*sin(B) + W*sin(C) + Base))){
+          Braccio.ServoMovement(20,           0,  a, b, c, 180,  10);
+        }
+      }
+    }
+  }
+  double A = a*r;
+  double B = b*r;
+  double C = c*r; 
+}
+
 
 double getX(double a,double b,double c){
   double W = 11.2;
