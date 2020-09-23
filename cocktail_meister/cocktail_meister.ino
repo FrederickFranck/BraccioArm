@@ -8,7 +8,7 @@ Servo wrist_rot;
 Servo wrist_ver;
 Servo gripper;
 
-int button = 13;
+int button = 5;
 
 void setup() {
   //Initialization functions and set up the initial position for Braccio
@@ -27,6 +27,10 @@ void setup() {
 
 
 void loop() {
+     pickUpCup();
+   if(digitalRead(button)){
+   
+   }
   
    /*
    Step Delay: a milliseconds delay between the movement of each servo.  Allowed values from 10 to 30 msec.
@@ -48,15 +52,28 @@ void loop() {
 }
 
 void pickUpCup(){
+                         //(step delay, M1, M2, M3, M4, M5, M6);
+  Braccio.ServoMovement(30,           80,  85, 90, 100,  0,   10);
+  Braccio.ServoMovement(30,           80,  85, 180, 100, 0,  10);
+  Braccio.ServoMovement(30,           80,  110, 180, 100, 0, 10);
+  Braccio.ServoMovement(30,           80,  110, 180, 100, 30,10);
+  
+  //in front of cup 
+  Braccio.ServoMovement(30,           80,  110, 180, 80, 30, 10);
 
+  //move in cup
+  Braccio.ServoMovement(30,           80,  130, 160, 80, 30, 10);
+ 
+  //grip cup
+  Braccio.ServoMovement(30,           80,  130, 160, 80, 30, 70);
+
+  //lift up 
+  Braccio.ServoMovement(30,           80,  130, 160, 80, 30, 70);
+  
 }
 
 
 
 void moveStraight(){
-  Braccio.ServoMovement(20,           0,  85, 90, 100, 180,  10); 
-}
-
-void moveTo(int a,int b,int c){
-  Braccio.ServoMovement(20,           0,  a, b, c, 180,  10); 
+  Braccio.ServoMovement(20,           0,  85, 90, 100, 0,  10); 
 }
