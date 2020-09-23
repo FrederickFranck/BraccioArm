@@ -170,8 +170,10 @@ int moveToPoint(int x, int y, int z){
   }
 }
 
-void bruteforce(x, y, z){
- double W = 11.2;
+//gaat alle mogelijk hoeken af en kijkt of bij elke combinatie die coordinaten overeenkomen
+//dit gaat heel lang duren 
+void bruteforce(int x, int y, int z){
+  double W = 11.2;
   double E = 12.2;
   double S = 12.2;
   double Base = 7;
@@ -185,13 +187,11 @@ void bruteforce(x, y, z){
         double C = c*r;
         if( (x == (S*cos(A) + E*cos(B) + W*cos(C))) && (z == (S*sin(A) + E*sin(B) + W*sin(C) + Base))){
           Braccio.ServoMovement(20,           0,  a, b, c, 180,  10);
+          return;
         }
       }
     }
   }
-  double A = a*r;
-  double B = b*r;
-  double C = c*r; 
 }
 
 
