@@ -25,146 +25,153 @@ void setup() {
 
 void loop() {
   moveToPoint(10,0,10);
-   /*
-   Step Delay: a milliseconds delay between the movement of each servo.  Allowed values from 10 to 30 msec.
-   M1=base degrees.               Allowed values from 0 to 180 degrees
-   M2=shoulder degrees.           Allowed values from 15 to 165 degrees
-   M3=elbow degrees.              Allowed values from 0 to 180 degrees
-   M4=wrist vertical degrees.     Allowed values from 0 to 180 degrees
-   M5=wrist rotation degrees.     Allowed values from 0 to 180 degrees
-   M6=gripper degrees.            Allowed values from 10 to 73 degrees. 10: the toungue is open, 73: the gripper is closed.
-  */
-  /*
-                       //(step delay, M1, M2, M3, M4, M5, M6);
-  Braccio.ServoMovement(20,           0,  40, 180, 0, 180,  73);
-
-  Braccio.ServoMovement(20,           0,  40, 180, 180, 180,  73);
-  */
-  
-   
 }
 
+//zet de arm rechtop 
 void moveStraight(){
   Braccio.ServoMovement(20,           0,  85, 90, 100, 180,  10); 
 }
 
-void moveTo(int a,int b,int c){
-  Braccio.ServoMovement(20,           0,  a, b, c, 180,  10); 
+//beweegt de arm met gegeven hoeken voor m2,m3,m4
+void moveTo(int angle_m2,int angle_m3,int angle_m4){
+  Braccio.ServoMovement(20,           0,  angle_m2, angle_m3, angle_m4, 180,  10); 
 }
 
+//probeert de correcte hoeken te berekenen om de arm naar het gegeven punt in cartesische coordinaten te bewegen
+//de y coordinaat wordt voorlopig nog genegeert
 int moveToPoint(int x, int y, int z){
-  int a = 90;
-  int b = 90;
-  int c = 90;
-  int margin;
+  
+  //de hoeken krijgen een beginwaarde 
+  int angle_m2 = 90;
+  int angle_m3 = 90;
+  int angle_m4 = 90;
+
+  //hoe ver het punt mag afwijken van de gegeven coordinaten
+  int margin = 2;
+  
+  //berekende coordinaten
   double _x = 0;
   double _z = 0;
+
+  bool point_found = false;
   
-  while(true){
-    moveTo(a,b,c);
-    _x = getX(a,b,c);
-    _z = getZ(a,b,c);
-    
+  while(!point_found){
+    //moveTo(angle_m2,angle_m3,angle_m4);
+
+    //berekent coordinaten op basis van de hoeken 
+    _x = getX(angle_m2,angle_m3,angle_m4);
+    _z = getZ(angle_m2,angle_m3,angle_m4);
+
+    //print deze coordinaten
     Serial.print(_x);
     Serial.print(" ");
     Serial.print(_z);
     Serial.println();
 
-    if(_x > (x + margin)){
-      if(a >= 90){
-        a = a - 5;
-      }
-      if(a < 90){
-        a = a + 5;
-      }
+    //als de berekende coordinaten tussen de toegelaten marges ligt hebben we het punt gevonden en bewegen we de arm
+    if( (x - margin) > _x && _x < (x + margin) && (z - margin) > _z && _z < (z + margin)){
+      point_found = true;
+      moveTo(angle_m2,angle_m3,angle_m4);
+    }
 
-      if(b >= 90){
-        b = b - 5;
-      }
-      if(b < 90){
-        b = b + 5;
-      }
-
-      if(c >= 90){
-        c = c - 2;
-      }
-      if(c < 90){
-        c = c + 2;
-      }
+    //anders passen we de hoeken aan met kleine wijzigingen op basis van de berekende coordinaten
+    else{
+      if(_x > (x + margin)){
+        if(angle_m2 >= 90){
+          angle_m2 = angle_m2 - 5;
+        }
+        if(angle_m2 < 90){
+          angle_m2 = angle_m2 + 5;
+        }
+  
+        if(angle_m3 >= 90){
+          angle_m3 = angle_m3 - 5;
+        }
+        if(angle_m3 < 90){
+          angle_m3 = angle_m3 + 5;
+        }
+  
+        if(angle_m4 >= 90){
+          angle_m4 = angle_m4 - 2;
+        }
+        if(angle_m4 < 90){
+          angle_m4 = angle_m4 + 2;
+        }
     }
 
 
     if(_x < (x - margin)){
-      if(a >= 90){
-        a = a + 5;
-      }
-      if(a < 90){
-        a = a - 5;
-      }
-
-      if(b >= 90){
-        b = b + 5;
-      }
-      if(b < 90){
-        b = b - 5;
-      }
-
-      if(c >= 90){
-        c = c - 2;
-      }
-      if(c < 90){
-        c = c + 2;
-      }
+        if(angle_m2 >= 90){
+          angle_m2 = angle_m2 + 5;
+        }
+        if(angle_m2 < 90){
+          angle_m2 = angle_m2 - 5;
+        }
+  
+        if(angle_m3 >= 90){
+          angle_m3 = angle_m3 + 5;
+        }
+        if(angle_m3 < 90){
+          angle_m3 = angle_m3 - 5;
+        }
+  
+        if(angle_m4 >= 90){
+          angle_m4 = angle_m4 - 2;
+        }
+        if(angle_m4 < 90){
+          angle_m4 = angle_m4 + 2;
+        }
     }
 
 
     if(_z > (z + margin)){
-      if(a >= 90){
-        a = a + 5;
+        if(angle_m2 >= 90){
+          angle_m2 = angle_m2 + 5;
+        }
+        if(angle_m2 < 90){
+          angle_m2 = angle_m2 - 5;
+        }
+  
+        if(angle_m3 >= 90){
+          angle_m3 = angle_m3 + 5;
+        }
+        if(angle_m3 < 90){
+          angle_m3 = angle_m3 - 5;
+        }
+  
+        if(angle_m4 >= 90){
+          angle_m4 = angle_m4 + 2;
+        }
+        if(angle_m4 < 90){
+          angle_m4 = angle_m4 - 2;
+        }
       }
-      if(a < 90){
-        a = a - 5;
-      }
-
-      if(b >= 90){
-        b = b + 5;
-      }
-      if(b < 90){
-        b = b - 5;
-      }
-
-      if(c >= 90){
-        c = c + 2;
-      }
-      if(c < 90){
-        c = c - 2;
-      }
-    }
 
 
     if(_z < (z - margin)){
-      if(a >= 90){
-        a = a - 5;
-      }
-      if(a < 90){
-        a = a + 5;
-      }
-
-      if(b >= 90){
-        b = b - 5;
-      }
-      if(b < 90){
-        b = b + 5;
-      }
-
-      if(c >= 90){
-        c = c + 2;
-      }
-      if(c < 90){
-        c = c -2;
-      }
+        if(angle_m2 >= 90){
+          angle_m2 = angle_m2 - 5;
+        }
+        if(angle_m2 < 90){
+          angle_m2 = angle_m2 + 5;
+        }
+  
+        if(angle_m3 >= 90){
+          angle_m3 = angle_m3 - 5;
+        }
+        if(angle_m3 < 90){
+          angle_m3 = angle_m3 + 5;
+        }
+  
+        if(angle_m4 >= 90){
+          angle_m4 = angle_m4 + 2;
+        }
+        if(angle_m4 < 90){
+          angle_m4 = angle_m4 -2;
+        }
     }
-
+    }
+    
     delay(3000);
     
   }
@@ -173,19 +180,22 @@ int moveToPoint(int x, int y, int z){
 //gaat alle mogelijk hoeken af en kijkt of bij elke combinatie die coordinaten overeenkomen
 //dit gaat heel lang duren 
 void bruteforce(int x, int y, int z){
-  double W = 11.2;
-  double E = 12.2;
-  double S = 12.2;
-  double Base = 7;
-  double r = ((2*PI)/360);
+  double wrist_length = 11.2;
+  double elbow_lenght = 12.2;
+  double shoulder_lenght = 12.2;
+  double base_length = 7;
+  double radials = ((2*PI)/360);
 
-  for(int a = 15; a <=165; a++){
-    for(int b = 0; b <= 180; b++){
-      for(int c = 0; c <= 180; c++){
-        double A = a*r;
-        double B = b*r;
-        double C = c*r;
-        if( (x == (S*cos(A) + E*cos(B) + W*cos(C))) && (z == (S*sin(A) + E*sin(B) + W*sin(C) + Base))){
+  for(int angle_m2 = 15; angle_m2 <=165; angle_m2++){
+    for(int angle_m3 = 0; angle_m3 <= 180; angle_m3++){
+      for(int angle_m4 = 0; angle_m4 <= 180; angle_m4++){
+        
+        //hoeken omzetten in radialen want sin() & cos() functies werken met radialen
+        double angle_m2_radial = angle_m2*radials;
+        double angle_m3_radial = angle_m3*radials;
+        double angle_m4_radial = angle_m4*radials;
+        
+        if( (x == (S*cos(angle_m2_radial) + E*cos(angle_m3_radial) + W*cos(angle_m4_radial))) && (z == (S*sin(angle_m2_radial) + E*sin(angle_m3_radial) + W*sin(angle_m4_radial) + Base))){
           Braccio.ServoMovement(20,           0,  a, b, c, 180,  10);
           return;
         }
@@ -194,28 +204,35 @@ void bruteforce(int x, int y, int z){
   }
 }
 
-
-double getX(double a,double b,double c){
-  double W = 11.2;
-  double E = 12.2;
-  double S = 12.2;
+//berekent X coordinaat op basis van gegeven hoeken 
+double getX(double angle_m2,double angle_m3,double angle_m4){
   
-  double r = ((2*PI)/360);
-  double A = a*r;
-  double B = b*r;
-  double C = c*r;
-  return (S*cos(A) + E*cos(B) + W*cos(C));
+  double wrist_length = 11.2;
+  double elbow_lenght = 12.2;
+  double shoulder_lenght = 12.2;
+  double radials = ((2*PI)/360);
+  
+  //hoeken omzetten in radialen want sin() & cos() functies werken met radialen
+  double angle_m2_radial = angle_m2*radials;
+  double angle_m3_radial = angle_m3*radials;
+  double angle_m4_radial = angle_m4*radials;
+        
+  return (S*cos(angle_m2_radial) + E*cos(angle_m3_radial) + W*cos(angle_m4_radial));
 }
 
+//berekent Z coordinaat op basis van gegeven hoeken 
+double getZ(double angle_m2,double angle_m3,double angle_m4){
+  
+  double wrist_length = 11.2;
+  double elbow_lenght = 12.2;
+  double shoulder_lenght = 12.2;
+  double base_length = 7;
+  double radials = ((2*PI)/360);
 
-double getZ(double a,double b,double c){
-  double W = 11.2;
-  double E = 12.2;
-  double S = 12.2;
-  double Base = 7;
-  double r = ((2*PI)/360);
-  double A = a*r;
-  double B = b*r;
-  double C = c*r;
-  return (S*sin(A) + E*sin(B) + W*sin(C) + Base);
+  //hoeken omzetten in radialen want sin() & cos() functies werken met radialen
+  double angle_m2_radial = angle_m2*radials;
+  double angle_m3_radial = angle_m3*radials;
+  double angle_m4_radial = angle_m4*radials;
+        
+  return (S*sin(angle_m2_radial) + E*sin(angle_m3_radial) + W*sin(angle_m4_radial) + Base);
 }
